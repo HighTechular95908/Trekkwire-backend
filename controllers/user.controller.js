@@ -9,7 +9,7 @@ var mongoose = require("mongoose"),
     config = require("../config/config");
 
 exports.register = (req, res) => {
-    let { useremail, password = "1234567890", name, gender, birthday, address, phone } = req.body;
+    let { useremail, password = "1234567890", fullName, gender, birthday, location, phone } = req.body;
     User.create({
         useremail, password, name, gender, birthday, address, phone,
     }).then(user => {
