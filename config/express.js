@@ -1,32 +1,37 @@
 var express = require("express"),
-    morgan = require("morgan"),
-    passport = require("passport"),
-    cors = require("cors"),
-    methodOverride = require("method-override"),
-    // path = require("path"),
-    routers = require("./routers");
+  morgan = require("morgan"),
+  passport = require("passport"),
+  cors = require("cors"),
+  methodOverride = require("method-override"),
+  // path = require("path"),
+  routers = require("./routers");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("../swagger.json");
 
 module.exports = () => {
+  var app = express();
 
-    var app = express();    
+  app.use(express.json());
+  app.use(
+    express.urlencoded({
+      extended: true,
+    })
+  );
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-    app.use(express.json());
-    app.use(express.urlencoded({
-        extended: true
-    }));
-    app.use(cors());
-    app.use(morgan("dev"));
-    app.use(methodOverride());
+  app.use(cors());
+  app.use(morgan("dev"));
+  app.use(methodOverride());
 
-    app.use(passport.initialize());
-    app.use(passport.session());
+  app.use(passport.initialize());
+  app.use(passport.session());
 
-    routers.map(router => {
-        app.use(`/api/${router}`, require(`../routers/${router}.router`));
-    });
+  routers.map((router) => {
+    app.use(`/api/${router}`, require(`../routers/${router}.router`));
+  });
 
-    // app.use(express.static(path.resolve(__dirname, "../views")));
-    // app.get("*", (req, res) => res.sendFile(path.resolve(__dirname, "../views", "index.html")));
+  // app.use(express.static(path.resolve(__dirname, "../views")));
+  // app.get("*", (req, res) => res.sendFile(path.resolve(__dirname, "../views", "index.html")));
 
-    return app;
-}
+  return app;
+};
