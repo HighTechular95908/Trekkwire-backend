@@ -5,9 +5,9 @@ var passport = require('passport'),
     User = require('mongoose').model('User');
 
 module.exports = function() {
-    passport.use(new LocalStrategy(function(useremail, password, done) {
+    passport.use(new LocalStrategy(function(email, password, done) {
         User.findOne({
-            useremail: useremail
+            email: email
         }).then(async user => {
             if (!user) {
                 return done('User cannot find.', false);
@@ -24,7 +24,7 @@ module.exports = function() {
             if (!user.authenticate(password)) {
                 return done('Password is wrong!', false);
             }
-            await User.updateOne({ useremail: useremail }, { logins: user.logins + 1, lastLogin: Date.now() }); 
+            await User.updateOne({ email: password }, { logins: user.logins + 1, lastLogin: Date.now() }); 
             return done(null, user);
         }).catch(err => done(err));
     }));

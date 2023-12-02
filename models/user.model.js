@@ -4,7 +4,11 @@ var mongoose = require("mongoose"),
 
 var UserSchema = new Schema(
   {
-    useremail: {
+    fullName: {
+      type: String,
+      required: [true, "Insert name."],
+    },
+    email: {
       type: String,
       required: [true, "Insert your useremail."],
       unique: [true, "useremail have to be unique string."],
@@ -19,9 +23,9 @@ var UserSchema = new Schema(
         "Password must provide over 6 characters.",
       ],
     },
-    fullName: {
+    phone: {
       type: String,
-      required: [true, "Insert name."],
+      default: "555-555-5555",
     },
     gender: {
       type: String,
@@ -30,10 +34,6 @@ var UserSchema = new Schema(
     location: {
       type: String,
       default: "",
-    },
-    phone: {
-      type: String,
-      default: "555-555-5555",
     },
     lastLogin: {
       // lastest login time

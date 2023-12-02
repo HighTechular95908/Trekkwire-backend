@@ -4,13 +4,30 @@ var mongoose = require("mongoose"),
 
 var TravelerSchema = new Schema(
   {
-    userId: {
-      type: String,
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
     },
-    booking: {
-      type: Schema.Types.Array,
-      default: [], //BookingInfo here.
-    },
+    booking: [
+      {
+        guideId: {
+          type: String,
+          required: true,
+        },
+        travelName: {
+          type: String,
+          required: true,
+        },
+        startDate: {
+          type: Date,
+          default: Date.now(),
+        },
+        endDate: {
+          type: Date,
+          default: Date.now(),
+        },
+      },
+    ],
   },
   {
     timestamps: true,

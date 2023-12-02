@@ -5,7 +5,7 @@ var config = require("../config"),
 module.exports = (user) => {
     var jsonData = {
         _id: user._id,
-        useremail: user.useremail,
+        email: user.email,
         role: user.role
     };
     return jwt.sign(jsonData, config.secret, {
