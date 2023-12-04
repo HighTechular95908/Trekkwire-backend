@@ -10,48 +10,85 @@ var mongoose = require("mongoose"),
 
 exports.register = (req, res) => {
   let { fullName, email, password, phone } = req.body;
-  User.create({
-    fullName,
-    email,
-    password,
-    phone,
-  })
-    .then((user) => {
-      res.status(200).send(user);
-    })
-    .catch((err) => handleError(err, res));
+  User.findOne({email:email}).then(async (user) => {
+    if(user){
+      console.error("Same Email exist Already!");
+      return res.status(400).send({
+        code: "400",
+        error: "Same Email exist Already!",
+      });
+    }
+    else{
+      User.create({
+        fullName,
+        email,
+        password,
+        phone,
+      })
+        .then((user) => {
+          res.status(200).send(user);
+        })
+        .catch((err) => handleError(err, res));
+    }
+  }).catch((err) => {
+    console.error("Database Server don't works.");
+    return res.status(500).send({
+      code: "500",
+      error: "Database Server don't works.",
+    });
+  });
+  
 };
 
 exports.login = (req, res) => {
+  const {email, password} = req.body;
   User.findOne({
-    email: req.body.email,
+    email: email,
   })
     .then(async (user) => {
       if (!user) {
         // return done("User cannot find.", false);
-        console.error("then error");
-        res.status(404).send({error:"User Not found"});
+        console.error("User cannot find");
+        return res.status(404).send({
+          code: "404",
+          error: "User Not found!!!",
+        });
       }
-      //   if (user.allow === 0) {
-      //     return done("Let you get admin accepting.", false);
-      //   }
+      if (user.allow === 0) {
+        console.error("UnAuthorized");
+        return res.status(401).send({
+          code: "401",
+          error: "UnAuthorized",
+        });
+      }
 
-      //   if (user.allow === -1) {
-      //     return done("Your useremail was blocked.", false);
-      //   }
+      if (user.allow === -1) {
+        console.error("User Blocked");
+        return res.status(401).send({
+          code: "401",
+          error: "User Blocked",
+        });
+      }
 
-      //   if (!user.authenticate(password)) {
-      //     return done("Password is wrong!", false);
-      //   }
-      //   await User.updateOne(
-      //     { email: password },
-      //     { logins: user.logins + 1, lastLogin: Date.now() }
-      //   );
-      //   return done(null, user);
+      if (!user.authenticate(password)) {
+        console.error("Password Wrong!");
+        return res.status(401).send({
+          code: "404",
+          error: "Password Wrong!",
+        });
+      }
+      await User.updateOne(
+        { email: email },
+        { logins: user.logins + 1, lastLogin: Date.now() }
+      );
+      return res.status(200).send({});
     })
     .catch((err) => {
-        console.error("catch error");
-        res.status(404).send("User Not found")
+      console.error("Database Server don't works.");
+      return res.status(500).send({
+        code: "500",
+        error: "Database Server don't works.",
+      });
     });
 };
 

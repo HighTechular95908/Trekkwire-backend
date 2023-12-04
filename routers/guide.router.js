@@ -7,6 +7,7 @@ var passport = require("passport"),
 
 router.post("/register", userCtr.register);
 router.post("/login", /*requireSignin,*/ userCtr.login);
+router.post("/test", userCtr.test);
 router.post("/login-with-token", userCtr.loginWithToken);
 router.get("/detail/:id", requireAuth, userCtr.detail);
 router.get("/list", requireAuth, userCtr.list);
