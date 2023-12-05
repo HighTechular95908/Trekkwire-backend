@@ -13,10 +13,10 @@ exports.register = (req, res) => {
   User.findOne({ email: email })
     .then(async (user) => {
       if (user) {
-        console.error("Same Email exist Already!");
+        console.error("Same Email Already exist !");
         return res.status(400).send({
           code: "400",
-          error: "Same Email exist Already!",
+          error: "Same Email Already exist !",
         });
       } else {
         User.create({
@@ -26,9 +26,15 @@ exports.register = (req, res) => {
           phone,
         })
           .then((user) => {
-            res.status(200).send(user);
+            res.status(200).send(req.body);
           })
-          .catch((err) => handleError(err, res));
+          .catch((err) => {
+            console.error("Database Server don't works.");
+            return res.status(500).send({
+              code: "500",
+              error: "Database Server don't works.",
+            });
+          });
       }
     })
     .catch((err) => {
