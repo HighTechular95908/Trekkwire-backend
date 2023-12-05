@@ -185,7 +185,9 @@ exports.list = (req, res) => {
 exports.update = catchAsync(async (req, res) => {
   let id = req.params.id;
   await User.findByIdAndUpdate(id, req.body);
-  res.status(200).send("Successfully updated.");
+  res.status(200).send({
+    
+  });
 });
 
 exports.delete = catchAsync(async (req, res) => {
