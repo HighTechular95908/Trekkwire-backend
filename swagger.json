@@ -65,16 +65,6 @@
                                     "name": "user"
                                 }
                             }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/User"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/User"
-                            }
                         }
                     }
                 },
@@ -114,16 +104,6 @@
                                     "name": "user"
                                 }
                             }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/User"
-                            }
-                        },
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "$ref": "#/components/schemas/User"
-                            }
                         }
                     }
                 },
@@ -147,11 +127,6 @@
                                     "xml": {
                                         "name": "user"
                                     }
-                                }
-                            },
-                            "application/xml": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
                                 }
                             }
                         }

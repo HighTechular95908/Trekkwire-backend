@@ -10,38 +10,38 @@ var mongoose = require("mongoose"),
 
 exports.register = (req, res) => {
   let { fullName, email, password, phone } = req.body;
-  User.findOne({email:email}).then(async (user) => {
-    if(user){
-      console.error("Same Email exist Already!");
-      return res.status(400).send({
-        code: "400",
-        error: "Same Email exist Already!",
-      });
-    }
-    else{
-      User.create({
-        fullName,
-        email,
-        password,
-        phone,
-      })
-        .then((user) => {
-          res.status(200).send(user);
+  User.findOne({ email: email })
+    .then(async (user) => {
+      if (user) {
+        console.error("Same Email exist Already!");
+        return res.status(400).send({
+          code: "400",
+          error: "Same Email exist Already!",
+        });
+      } else {
+        User.create({
+          fullName,
+          email,
+          password,
+          phone,
         })
-        .catch((err) => handleError(err, res));
-    }
-  }).catch((err) => {
-    console.error("Database Server don't works.");
-    return res.status(500).send({
-      code: "500",
-      error: "Database Server don't works.",
+          .then((user) => {
+            res.status(200).send(user);
+          })
+          .catch((err) => handleError(err, res));
+      }
+    })
+    .catch((err) => {
+      console.error("Database Server don't works.");
+      return res.status(500).send({
+        code: "500",
+        error: "Database Server don't works.",
+      });
     });
-  });
-  
 };
 
 exports.login = (req, res) => {
-  const {email, password} = req.body;
+  const { email, password } = req.body;
   User.findOne({
     email: email,
   })
@@ -81,7 +81,10 @@ exports.login = (req, res) => {
         { email: email },
         { logins: user.logins + 1, lastLogin: Date.now() }
       );
-      return res.status(200).send({});
+      return res.status(200).send({
+        token: getToken(user),
+        user: user,
+      });
     })
     .catch((err) => {
       console.error("Database Server don't works.");
