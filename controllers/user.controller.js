@@ -2,6 +2,8 @@ const getToken = require("../config/utils/getToken");
 const handleError = require("../config/utils/handleError");
 const catchAsync = require("../config/utils/catchAsync");
 
+var crypto = require("crypto");
+
 var mongoose = require("mongoose"),
   User = mongoose.model("User"),
   jwt = require("jsonwebtoken"),
@@ -184,16 +186,50 @@ exports.list = (req, res) => {
 
 exports.update = catchAsync(async (req, res) => {
   let id = req.params.id;
-  await User.findByIdAndUpdate(id, req.body);
-  res.status(200).send({
-    
-  });
+  let userInfo = req.body;
+  if (userInfo.email) {
+    User.findOne({
+      email: userInfo.email,
+    }).then(async (user) => {
+      if (user) {
+        console.error("Same Email Already exist !");
+        return res.status(400).send({
+          code: "400",
+          error: "Same Email Already exist !",
+        });
+      } else {
+        await User.findByIdAndUpdate(id, userInfo);
+        res.status(200).send({});
+      }
+    });
+  } else {
+    await User.findByIdAndUpdate(id, userInfo);
+  }
 });
 
 exports.delete = catchAsync(async (req, res) => {
   let id = req.params.id;
   await User.findByIdAndDelete(id);
   res.status(200).send("Successfully deleted.");
+});
+
+//password change
+exports.changePassword = catchAsync(async (req, res) => {
+  let id = req.params.id;
+  let { password_cur, password_new } = req.body;
+  let user = await User.findById(id);
+  if (!user.authenticate(password_cur)) {
+    //password wrong
+    console.error("Current Password Wrong!");
+    return res.status(400).send({
+      code: "400",
+      error: "Current Password Wrong!",
+    });
+  } else {
+    user.password = password_new;
+    await user.save();
+    res.status(200).send({});
+  }
 });
 
 exports.formatPassword = catchAsync(async (req, res) => {

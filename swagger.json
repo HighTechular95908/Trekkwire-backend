@@ -188,6 +188,10 @@
                                     "phone":{
                                         "type":"string",
                                         "example":"111-111-1110"
+                                    },
+                                    "password":{
+                                        "type":"string",
+                                        "example":"aaaaaa"
                                     }
                                 },
                                 "xml": {

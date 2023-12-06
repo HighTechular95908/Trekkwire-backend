@@ -10,8 +10,9 @@ router.post("/login", /*requireSignin,*/ userCtr.login);
 router.post("/login-with-token", userCtr.loginWithToken);
 router.get("/detail/:id", requireAuth, userCtr.detail);
 router.get("/list", requireAuth, userCtr.list);
-router.put("/:id", requireAuth, /*requireAdmin,*/ userCtr.update);
+router.put("/:id", /*requireAuth, requireAdmin,*/ userCtr.update);
 router.delete("/:id", requireAuth, requireAdmin, userCtr.delete);
+router.put("/password/:id", /*requireAuth, requireAdmin,*/ userCtr.changePassword);
 router.post("/format-password/:id", requireAuth, requireAdmin, userCtr.formatPassword);
 
 module.exports = router;
