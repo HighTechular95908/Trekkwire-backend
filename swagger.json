@@ -166,7 +166,7 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "example":"656e30a00e583cb855b5785c"
+                            "example":"656f705e7ebdd568f45664a2"
                         }
                     }
                 ],
@@ -183,15 +183,11 @@
                                     },
                                     "email": {
                                         "type": "string",
-                                        "example": "james@gmail.com"
+                                        "example": "jamessmith@gmail.com"
                                     },
                                     "phone":{
                                         "type":"string",
-                                        "example":"111-111-1110"
-                                    },
-                                    "password":{
-                                        "type":"string",
-                                        "example":"aaaaaa"
+                                        "example":"111-111-1115"
                                     }
                                 },
                                 "xml": {
