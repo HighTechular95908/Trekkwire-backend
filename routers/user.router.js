@@ -6,6 +6,7 @@ var passport = require("passport"),
     requireAdmin = require("../config/middlewares/requireAdmin");
 
 router.post("/register", userCtr.register);
+router.post("/upload", userCtr.upload);
 router.post("/login", /*requireSignin,*/ userCtr.login);
 router.post("/login-with-token", userCtr.loginWithToken);
 router.get("/detail/:id", requireAuth, userCtr.detail);

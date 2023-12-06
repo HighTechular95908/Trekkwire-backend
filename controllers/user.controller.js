@@ -1,15 +1,42 @@
 const getToken = require("../config/utils/getToken");
 const handleError = require("../config/utils/handleError");
 const catchAsync = require("../config/utils/catchAsync");
-
-var crypto = require("crypto");
+//image upload
+const multer = require('multer');
 
 var mongoose = require("mongoose"),
   User = mongoose.model("User"),
   jwt = require("jsonwebtoken"),
   url = require("url"),
   config = require("../config/config");
+// Set up the storage configuration for multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    // Specify the folder where you want to save the images
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    // Generate a unique filename for the uploaded image
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + '-' + uniqueSuffix);
+  },
+});
 
+// Create the multer middleware
+const upload = multer({ storage: storage });
+
+// Route for handling image uploads
+exports.upload = (req, res) => {
+  console.log("upload route called");
+  if (!req.file) {
+    console.log("No image file provided");
+    return res.status(400).send({ message: 'No image file provided' });
+  }
+  // Handle the uploaded image here (e.g., save to database, perform further processing)
+  console.log("Image uploaded successfully");
+
+  return res.status(200).send({ message: 'Image uploaded successfully' });
+};
 exports.register = (req, res) => {
   let { fullName, email, password, phone } = req.body;
   User.findOne({ email: email })
