@@ -206,6 +206,54 @@
                 }
             }
         },
+        "/user/password/{userId}": {
+            "put": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get user by user name",
+                "description": "",
+                "operationId": "getUserByName",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "userId to be signed out",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example":"656f705e7ebdd568f45664a2"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Created user object",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "password_cur":{
+                                        "type":"string",
+                                        "example":"aaaaaa"
+                                    },
+                                    "password_new":{
+                                        "type":"string",
+                                        "example":"123456"
+                                    }
+                                },
+                                "xml": {
+                                    "name": "user"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {}
+                }
+            }
+        },
         "components": {
             "schemas": {
                 "User": {
