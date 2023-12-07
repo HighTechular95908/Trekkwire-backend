@@ -1,16 +1,6 @@
 const getToken = require("../config/utils/getToken");
 const handleError = require("../config/utils/handleError");
 const catchAsync = require("../config/utils/catchAsync");
-<<<<<<< HEAD:src/controllers/user.controller.js
-<<<<<<< HEAD:src/controllers/user.controller.js
-=======
-
-var crypto = require("crypto");
->>>>>>> parent of 6af01f3 (multer added):controllers/user.controller.js
-=======
-
-var crypto = require("crypto");
->>>>>>> parent of 6af01f3 (multer added):controllers/user.controller.js
 
 var mongoose = require("mongoose"),
   User = mongoose.model("User"),
