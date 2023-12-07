@@ -2,12 +2,35 @@ const getToken = require("../config/utils/getToken");
 const handleError = require("../config/utils/handleError");
 const catchAsync = require("../config/utils/catchAsync");
 
+const fs = require("fs");
+const path = require("path");
+const avatarUploadPath = "../assets/media/avatar/";
 var mongoose = require("mongoose"),
   User = mongoose.model("User"),
   jwt = require("jsonwebtoken"),
   url = require("url"),
   config = require("../config/config");
 
+exports.avatar = (req, res) => {
+  const filePath = path.join(__dirname, avatarUploadPath, `${req.params.id}.avatar`);
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      return res.status(500).send(
+        {
+          code:"500",
+          error:"Avatar No Exist"
+        }
+      );
+    } else {
+      const uri = data.toString();
+      console.log("data----->",data);
+      console.log("data.string----->",data.toString());
+      return res.status(200).send({
+        uri:uri
+      });
+    }
+  });
+};
 exports.register = (req, res) => {
   let { fullName, email, password, phone } = req.body;
   User.findOne({ email: email })
