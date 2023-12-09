@@ -9,8 +9,8 @@ exports.uploadAvatar = (req, res) => {
   const filename = file.name;
   const fileData = file.uri;
   const fileType = file.type;
-  console.log("imageUri------------>",fileData);
-  console.log("imageUriType------------>",typeof(fileData));
+  // console.log("imageUri------------>",fileData);
+  // console.log("imageUriType------------>",typeof(fileData));
   // Decode the Base64 data into a binary buffer
   // const buffer = Buffer.from(fileData);
   // console.log("buffer-------->",buffer);

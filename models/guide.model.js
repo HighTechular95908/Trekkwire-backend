@@ -12,9 +12,8 @@ var GuideSchema = new Schema(
       {
         skillType: {
           type: String,
-          default:"travel"
+          default:""
         },
-
       }
     ],
     language: {
