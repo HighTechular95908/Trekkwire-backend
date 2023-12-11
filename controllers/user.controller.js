@@ -125,11 +125,7 @@ exports.login = (req, res) => {
 };
 
 exports.all = (req, res) => {
-  // return res.status(200).send({
-  //   code:"200",
-  //   error:"unknown"
-  // });
-User.find()
+User.find().select("-password -salt")
   .then((users) => {
     return res.status(200).send(users);  
   }
