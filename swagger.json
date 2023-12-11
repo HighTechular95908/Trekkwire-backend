@@ -202,6 +202,19 @@
                 }
             }
         },
+        "/user/all": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get user by user name",
+                "description": "",
+                "operationId": "getUserByName",
+                "responses": {
+                    "200": {}
+                }
+            }
+        },
         "/user/password/{userId}": {
             "put": {
                 "tags": [
