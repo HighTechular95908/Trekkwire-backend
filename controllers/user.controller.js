@@ -125,25 +125,24 @@ exports.login = (req, res) => {
 };
 
 exports.all = (req, res) => {
-  console.log("called")
-  return res.status(200).send({
-    code:"200",
-    error:"unknown"
-  });
-// User.find()
-//   .then((users) => {
-//     return res.status(200).send(users);  
-//   }
-//   )
-//   .catch((err)=>{
-//     return res.status(400).send(
-//       {
-//         code:"400",
-//         error:"users No exist"
-//       }
-//     );  
+  // return res.status(200).send({
+  //   code:"200",
+  //   error:"unknown"
+  // });
+User.find()
+  .then((users) => {
+    return res.status(200).send(users);  
+  }
+  )
+  .catch((err)=>{
+    return res.status(400).send(
+      {
+        code:"400",
+        error:"users No exist"
+      }
+    );  
 
-//   })
+  })
 
 
 };
