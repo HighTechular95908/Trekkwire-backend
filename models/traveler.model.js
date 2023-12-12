@@ -1,35 +1,38 @@
 var mongoose = require("mongoose"),
-  Schema = mongoose.Schema,
-  crypto = require("crypto");
+  Schema = mongoose.Schema;
 
-var TravelerSchema = new Schema(
-  {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
-    },
-    booking: [
-      {
-        guideId: {
-          type: String,
-          required: true,
-        },
-        travelName: {
-          type: String,
-          required: true,
-        },
-        startDate: {
-          type: Date,
-          default: Date.now(),
-        },
-        endDate: {
-          type: Date,
-          default: Date.now(),
-        },
-      },
-    ],
+var TravelerSchema = new Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
   },
-  {
-    timestamps: true,
-  }
-);
+  booking: [
+    {
+      guideId: {
+        type: String,
+        required: true,
+      },
+      travelName: {
+        type: String,
+        required: true,
+      },
+      startDate: {
+        type: Date,
+        default: Date.now(),
+      },
+      endDate: {
+        type: Date,
+        default: Date.now(),
+      },
+    },
+  ],
+  rating: {
+    type: Number,
+    default: 0,
+  },
+  ratingCount: {
+    type: Number,
+    default: 0,
+  },
+});
+mongoose.model("Traveler", TravelerSchema, "traveler");

@@ -23,13 +23,17 @@ var UserSchema = new Schema(
         "Password must provide over 6 characters.",
       ],
     },
+    avatar: {
+      type: String,
+      default: "",
+    },
     phone: {
       type: String,
       default: "555-555-5555",
     },
     gender: {
       type: String,
-      default: "male", //
+      default: "", //
     },
     location: {
       type: String,

@@ -1,5 +1,5 @@
 var passport = require("passport"),
-    requireSignin = passport.authenticate("local", { session: false }),
+    // requireSignin = passport.authenticate("local", { session: false }),
     requireAuth = passport.authenticate("jwt", { session: false }),
     router = require("express").Router(),
     userCtr = require("../controllers/user.controller"),

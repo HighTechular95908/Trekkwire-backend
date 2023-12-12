@@ -7,26 +7,29 @@ const path = require("path");
 const avatarUploadPath = "../assets/media/avatar/";
 var mongoose = require("mongoose"),
   User = mongoose.model("User"),
+  Traveler = mongoose.model("Traveler"),
   jwt = require("jsonwebtoken"),
   url = require("url"),
   config = require("../config/config");
 
 exports.avatar = (req, res) => {
-  const filePath = path.join(__dirname, avatarUploadPath, `${req.params.id}.avatar`);
+  const filePath = path.join(
+    __dirname,
+    avatarUploadPath,
+    `${req.params.id}.avatar`
+  );
   fs.readFile(filePath, (err, data) => {
     if (err) {
-      return res.status(500).send(
-        {
-          code:"500",
-          error:"Avatar No Exist"
-        }
-      );
+      console.error("---------->Avatar no exist")
+      return res.status(500).send({
+        code: "500",
+        error: "Avatar No Exist",
+      });
     } else {
+      console.error("---------->Avatar exist")
       const uri = data.toString();
-      console.log("data----->",data);
-      console.log("data.string----->",data.toString());
       return res.status(200).send({
-        uri:uri
+        uri: uri,
       });
     }
   });
@@ -49,7 +52,11 @@ exports.register = (req, res) => {
           phone,
         })
           .then((user) => {
-            res.status(200).send(req.body);
+            console.log(user.id);
+            Traveler.create({ user: user.id });
+          })
+          .then((user) => {
+            return res.status(200).send(req.body);
           })
           .catch((err) => {
             console.error("Database Server don't works.");
@@ -125,28 +132,21 @@ exports.login = (req, res) => {
 };
 
 exports.all = (req, res) => {
-User.find().select("-password -salt")
-  .then((users) => {
-    return res.status(200).send(users);  
-  }
-  )
-  .catch((err)=>{
-    return res.status(400).send(
-      {
-        code:"400",
-        error:"users No exist"
-      }
-    );  
-
-  })
-
-
+  User.find()
+    .select("-password -salt")
+    .then((users) => {
+      return res.status(200).send(users);
+    })
+    .catch((err) => {
+      return res.status(400).send({
+        code: "400",
+        error: "users No exist",
+      });
+    });
 };
 exports.test = (req, res) => {
-
-  User.find()
+  User.find();
   res.status(400).send({ data: "400 error sent" });
-
 };
 
 exports.loginWithToken = (req, res) => {
