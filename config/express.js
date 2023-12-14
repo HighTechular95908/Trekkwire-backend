@@ -4,7 +4,8 @@ var express = require("express"),
   cors = require("cors"),
   methodOverride = require("method-override"),
   path = require("path"),
-  routers = require("./routers");
+  routers = require("./routers"),
+  bodyParser = require('body-parser');
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("../swagger.json");
 
@@ -18,7 +19,7 @@ module.exports = () => {
     })
   );
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
+  app.use(bodyParser.json());
   app.use(cors());
   app.use(morgan("dev"));
   app.use(methodOverride());
@@ -35,3 +36,4 @@ module.exports = () => {
 
   return app;
 };
+

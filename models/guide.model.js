@@ -29,15 +29,15 @@ var GuideSchema = new Schema({
       },
       travelIntroImageUrl: {
         type: String,
-        required: [true, "Insert your travelName"],
+        required: [true, "Insert your travel IntroImage"],
       },
       hour: {
         type: Number,
-        required: [true, "Insert your travelName"],
+        required: [true, "Insert your travel duration"],
       },
       price: {
         type: Number,
-        required: [true, "Insert your travelName"],
+        required: [true, "Insert your travel Price"],
       },
     },
   ],
