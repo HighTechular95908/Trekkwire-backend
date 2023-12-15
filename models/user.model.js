@@ -39,6 +39,11 @@ var UserSchema = new Schema(
       type: String,
       default: "",
     },
+    birth: {
+      // lastest login time
+      type: Date,
+      default: Date.now(),
+    },
     lastLogin: {
       // lastest login time
       type: Date,

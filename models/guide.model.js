@@ -5,13 +5,17 @@ var GuideSchema = new Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
   },
-  activity: String,
-  activity: {
+  guideOverview:{
+    type:String,
+    default:""
+  },
+  activities: String,
+  activities: {
     type: Schema.Types.Array,
     default: [],
   },
-  language: String,
-  language: {
+  languages: String,
+  languages: {
     type: Schema.Types.Array,
     default: [],
   },
@@ -20,16 +24,15 @@ var GuideSchema = new Schema({
       travelName: {
         type: String,
         required: [true, "Insert your travelName"],
-        unique: [true, "travelName have to be unique string."],
       },
       travelType: {
         type: String,
         required: [true, "Insert your travelType"],
-        unique: [true, "travelType have to be unique string."],
       },
       travelIntroImageUrl: {
         type: String,
-        required: [true, "Insert your travel IntroImage"],
+        // required: [true, "Insert your travel IntroImage"],
+        default:""
       },
       hour: {
         type: Number,
@@ -39,6 +42,10 @@ var GuideSchema = new Schema({
         type: Number,
         required: [true, "Insert your travel Price"],
       },
+      availableNow:{
+        type: Number,
+        default:1 //0: not available, -1: blocked
+      }
     },
   ],
   rating: {

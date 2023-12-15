@@ -6,7 +6,7 @@ var passport = require("passport"),
     requireAdmin = require("../config/middlewares/requireAdmin");
 
 router.post("/register", userCtr.register);
-router.get("/all", userCtr.all);
+router.get("/search", userCtr.search);
 router.get("/avatar/:id", userCtr.avatar);
 router.post("/login", /*requireSignin,*/ userCtr.login);
 router.post("/login-with-token", userCtr.loginWithToken);///////////
@@ -14,7 +14,7 @@ router.get("/detail/:id", requireAuth, userCtr.detail);///////////////
 router.get("/list", requireAuth, userCtr.list);////////////
 router.put("/:id", /*requireAuth, requireAdmin,*/ userCtr.update);
 router.delete("/:id", requireAuth, requireAdmin, userCtr.delete);/////////////
-router.put("/password/:id", /*requireAuth, requireAdmin,*/ userCtr.changePassword);
-router.post("/format-password/:id", requireAuth, requireAdmin, userCtr.formatPassword);/////////////////
+router.put("/change-password/:id", /*requireAuth, requireAdmin,*/ userCtr.changePassword);
+router.put("/format-password/:id", requireAuth, requireAdmin, userCtr.formatPassword);///////////////// 
 
 module.exports = router;

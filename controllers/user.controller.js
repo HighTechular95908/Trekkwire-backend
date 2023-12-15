@@ -20,13 +20,13 @@ exports.avatar = (req, res) => {
   );
   fs.readFile(filePath, (err, data) => {
     if (err) {
-      console.error("---------->Avatar no exist")
+      console.error("---------->Avatar no exist");
       return res.status(500).send({
         code: "500",
         error: "Avatar No Exist",
       });
     } else {
-      console.error("---------->Avatar exist")
+      console.error("---------->Avatar exist");
       const uri = data.toString();
       return res.status(200).send({
         uri: uri,
@@ -35,7 +35,7 @@ exports.avatar = (req, res) => {
   });
 };
 exports.register = (req, res) => {
-  let { fullName, email, password, phone } = req.body;
+  let { fullName, email, password, phone, gender, birth } = req.body;
   User.findOne({ email: email })
     .then(async (user) => {
       if (user) {
@@ -50,6 +50,8 @@ exports.register = (req, res) => {
           email,
           password,
           phone,
+          gender,
+          birth,
         })
           .then((user) => {
             console.log(user.id);
@@ -124,25 +126,57 @@ exports.login = (req, res) => {
     })
     .catch((err) => {
       console.error("Database Server don't works.");
-      return res.status(500).send({
-        code: "500",
-        error: "Database Server don't works.",
-      });
+      handleError(err, res);
     });
 };
 
-exports.all = (req, res) => {
-  User.find()
-    .select("-password -salt")
-    .then((users) => {
-      return res.status(200).send(users);
-    })
-    .catch((err) => {
-      return res.status(400).send({
-        code: "400",
-        error: "users No exist",
+exports.search = (req, res) => {
+  var location = req.query._location;
+  var name = req.query._name;
+  console.log("----->",name);
+  if(name === null){
+    console.log("--->null");
+  }
+  if ((location === "" | location ===null) && (name === "" | name === null)) {
+    User.find()
+      .select("-password -salt")
+      .then((users) => {
+        return res.status(200).send(users);
+      })
+      .catch((err) => {
+        return res.status(400).send({
+          code: "400",
+          error: "users No exist",
+        });
       });
-    });
+  } else {
+    User.find({
+      $or: [
+        { name: { $regex: name, $options: "i" } }, // Case-insensitive search for name
+        { location: { $regex: location, $options: "i" } }, // Case-insensitive search for location
+      ],
+    })
+      .select("-password -salt")
+      .then((users) => {
+        if (users.length === 0) {
+          // Handle the case where the filtered guide does not exist
+          console.log("No guides found for the specified search value");
+          return res.status(400).send({
+            code: "400",
+            error: "users No exist",
+          });
+        } else {
+          console.log(users);
+          return res.status(200).send(users);
+          // Use the retrieved guides as needed
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        handleError(err, res);
+        // Handle the error
+      });
+  }
 };
 exports.test = (req, res) => {
   User.find();

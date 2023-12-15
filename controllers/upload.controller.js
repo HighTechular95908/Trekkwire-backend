@@ -42,8 +42,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-exports.uploadTest =( upload.array("photo", 3), (req, res) => {
-  console.log("file", req.files);
+exports.uploadTest =( upload.single("file"), (req, res) => {
+  console.log("file", req.file);
   console.log("body", req.body);
   res.status(200).json({
     message: "success!",
