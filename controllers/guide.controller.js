@@ -52,11 +52,15 @@ exports.delete = catchAsync(async (req, res) => {
   }
 });
 exports.all = catchAsync(async (req, res) => {
+  console.log("------->all called")
   try {
-    const guides = await Guide
-    .find().populate("user", ["fullName", "avatar"]);
+    let guides = await Guide
+    .find()
+    .populate("user", ["fullName", "avatar"]);
+    console.log("------------>",guides);
     return res.status(200).send(guides);
   } catch (err) {
+    console("---------<",err)
     handleError(err, res);
   }
 });

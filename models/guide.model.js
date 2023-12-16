@@ -4,7 +4,7 @@ var mongoose = require("mongoose"),
 var GuideSchema = new Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+    ref: "User",
   },
   guideOverview:{
     type:String,
