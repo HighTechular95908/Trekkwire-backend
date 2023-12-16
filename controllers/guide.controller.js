@@ -51,60 +51,49 @@ exports.delete = catchAsync(async (req, res) => {
     handleError(err, res);
   }
 });
-
+exports.all = catchAsync(async (req, res) => {
+  try {
+    const guides = await Guide
+    .find().populate("user", ["fullName", "avatar"]);
+    return res.status(200).send(guides);
+  } catch (err) {
+    handleError(err, res);
+  }
+});
 exports.search = (req, res) => {
   var location = req.query._location;
   var name = req.query._name;
-  console.log("----->", name);
-  if (name === null) {
-    console.log("--->null");
-  }
-  if (
-    (location === "" || location === null) &&
-    (name === "" || name === null)
-  ) {
-    User.find({ roles: { $in: ["guide"] } })
-      .select("-password -salt")
-      .then((users) => {
-        return res.status(200).send(users);
-      })
-      .catch((err) => {
-        return res.status(400).send({
-          code: "400",
-          error: "users No exist",
-        });
-      });
-  } else {
-    User.find({
-      $or: [
-        { name: { $regex: name, $options: "i" } }, // Case-insensitive search for name
-        { location: { $regex: location, $options: "i" } }, // Case-insensitive search for location
-        { roles: { $in: ['guide'] } }
-      ],
+  const regFilter = {
+    $or: [
+      { fullName: { $regex: name, $options: "i" } }, // Case-insensitive search for name
+      { city: { $regex: location, $options: "i" } }, // Case-insensitive search for location
+      { country: { $regex: location, $options: "i" } }, // Case-insensitive search for location
+    ],
+    $and: [{ roles: { $in: ["guide"] } }],
+  };
+  Guide.findOne()
+    .populate("user", ["fullName", "avatar"])
+    .then((result) => {
+      console.log(result);
+      return res.status(200).send(result);
     })
-      .select("-password -salt")
-      .then((users) => {
-        if (users.length === 0) {
-          // Handle the case where the filtered guide does not exist
-          console.log("No guides found for the specified search value");
-          return res.status(400).send({
-            code: "400",
-            error: "users No exist",
-          });
-        } else {
-          console.log(users);
-          return res.status(200).send(users);
-          // Use the retrieved guides as needed
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        handleError(err, res);
-        // Handle the error
-      });
-  }
+    .catch((err) => handleError(err, res));
 };
-exports.guide = (req, res) => {
- var userId = req.params.id;
- Guide.findOne({user:userId},)
+
+exports.guideProfile = (req, res) => {
+  console.log("------------->guide get request");
+  var userId = req.params.id;
+  Guide.findOne({ user: userId })
+    .then((guide) => {
+      // User.findById(userId).select("-password -salt -email -gender -birth -lastLogin -logins -roles -allow").then((user)=>{
+      //   var merged = {...guide, ...user};
+      //   console.log(merged);
+      //   return res.status(200).send(guide);
+      // })
+      console.log(guide);
+      return res.status(200).send({
+        guide: guide,
+      });
+    })
+    .catch((err) => handleError(err, res));
 };

@@ -4,6 +4,7 @@ var mongoose = require("mongoose"),
 var GuideSchema = new Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
   },
   guideOverview:{
     type:String,
@@ -46,6 +47,22 @@ var GuideSchema = new Schema({
         type: Number,
         default:1 //0: not available, -1: blocked
       }
+    },
+  ],
+  social: [
+    {
+      facebook: {
+        type: String,
+        default:""
+      },
+      linkedin: {
+        type: String,
+        default:""
+      },
+      youtube: {
+        type: String,
+        default:""
+      },
     },
   ],
   rating: {

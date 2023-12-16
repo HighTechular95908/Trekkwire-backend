@@ -8,6 +8,7 @@ const avatarUploadPath = "../assets/media/avatar/";
 var mongoose = require("mongoose"),
   User = mongoose.model("User"),
   Traveler = mongoose.model("Traveler"),
+  Guide = mongoose.model("Guide"),
   jwt = require("jsonwebtoken"),
   url = require("url"),
   config = require("../config/config");
@@ -77,7 +78,6 @@ exports.register = (req, res) => {
       });
     });
 };
-
 exports.login = (req, res) => {
   const { email, password } = req.body;
   User.findOne({
@@ -119,6 +119,7 @@ exports.login = (req, res) => {
         { email: email },
         { logins: user.logins + 1, lastLogin: Date.now() }
       );
+      console.log(user);
       return res.status(200).send({
         token: getToken(user),
         user: user,
@@ -129,15 +130,26 @@ exports.login = (req, res) => {
       handleError(err, res);
     });
 };
-
+exports.all = (req, res) => {
+  Traveler.find()
+    .populate("user", ["fullName", "ratingCount","guideOverview"])
+    .select("-password -salt")
+    .then((users) => {
+      console.log(users);
+      return res.status(200).send(users);
+    })
+    .catch((err) => {
+      return res.status(400).send({
+        code: "400",
+        error: "users No exist",
+      });
+    });
+};
 exports.search = (req, res) => {
   var location = req.query._location;
   var name = req.query._name;
-  console.log("----->",name);
-  if(name === null){
-    console.log("--->null");
-  }
-  if ((location === "" | location ===null) && (name === "" | name === null)) {
+  if ((location == "" && name == "") || (location == null && name == null)) {
+    console.log("---------->both are null or empty");
     User.find()
       .select("-password -salt")
       .then((users) => {
@@ -150,12 +162,34 @@ exports.search = (req, res) => {
         });
       });
   } else {
-    User.find({
-      $or: [
-        { name: { $regex: name, $options: "i" } }, // Case-insensitive search for name
-        { location: { $regex: location, $options: "i" } }, // Case-insensitive search for location
-      ],
-    })
+    let regFilter = {};
+    if (name == "" || name == null) {
+      console.log("----------->case1");
+      regFilter = {
+        $or: [
+          { city: { $regex: location, $options: "i" } }, // Case-insensitive search for location
+          { country: { $regex: location, $options: "i" } }, // Case-insensitive search for location
+        ],
+      };
+    } else if (location == "" || location == null) {
+      console.log("----------->case2");
+      regFilter = {
+        $or: [
+          { fullName: { $regex: name, $options: "i" } }, // Case-insensitive search for name
+        ],
+      };
+    } else {
+      console.log("----------->case3");
+      regFilter = {
+        $or: [
+          { fullName: { $regex: name, $options: "i" } }, // Case-insensitive search for name
+          { city: { $regex: location, $options: "i" } }, // Case-insensitive search for location
+          { country: { $regex: location, $options: "i" } }, // Case-insensitive search for location
+        ],
+      };
+    }
+
+    User.find(regFilter)
       .select("-password -salt")
       .then((users) => {
         if (users.length === 0) {
@@ -166,7 +200,6 @@ exports.search = (req, res) => {
             error: "users No exist",
           });
         } else {
-          console.log(users);
           return res.status(200).send(users);
           // Use the retrieved guides as needed
         }
@@ -182,7 +215,6 @@ exports.test = (req, res) => {
   User.find();
   res.status(400).send({ data: "400 error sent" });
 };
-
 exports.loginWithToken = (req, res) => {
   let { token } = req.body;
   jwt.verify(token, config.secret, (err, payload) => {
@@ -200,7 +232,6 @@ exports.loginWithToken = (req, res) => {
     }
   });
 };
-
 exports.detail = (req, res) => {
   User.findById(req.params.id)
     .select("-password -salt")
@@ -210,7 +241,6 @@ exports.detail = (req, res) => {
     })
     .catch((err) => handleError(err, res));
 };
-
 exports.list = (req, res) => {
   var { search } = url.parse(req.url, true).query;
   var query = [
@@ -259,7 +289,6 @@ exports.list = (req, res) => {
     })
     .catch((err) => handleError(err, res));
 };
-
 exports.update = catchAsync(async (req, res) => {
   let id = req.params.id;
   let userInfo = req.body;
@@ -282,13 +311,11 @@ exports.update = catchAsync(async (req, res) => {
     await User.findByIdAndUpdate(id, userInfo);
   }
 });
-
 exports.delete = catchAsync(async (req, res) => {
   let id = req.params.id;
   await User.findByIdAndDelete(id);
   res.status(200).send("Successfully deleted.");
 });
-
 //password change
 exports.changePassword = catchAsync(async (req, res) => {
   let id = req.params.id;
@@ -307,7 +334,6 @@ exports.changePassword = catchAsync(async (req, res) => {
     res.status(200).send({});
   }
 });
-
 exports.formatPassword = catchAsync(async (req, res) => {
   let id = req.params.id;
   let user = await User.findById(id);

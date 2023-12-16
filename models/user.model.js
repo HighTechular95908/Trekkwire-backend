@@ -35,24 +35,18 @@ var UserSchema = new Schema(
       type: String,
       default: "", //
     },
-    location: {
-      type: String,
-      default: "",
-    },
     birth: {
       // lastest login time
       type: Date,
       default: Date.now(),
     },
-    lastLogin: {
-      // lastest login time
-      type: Date,
-      default: Date.now(),
+    country: {
+      type: String,
+      default: "",
     },
-    logins: {
-      // login number
-      type: Number,
-      default: 0,
+    city: {
+      type: String,
+      default: "",
     },
     roles: String,
     roles: {
@@ -64,6 +58,11 @@ var UserSchema = new Schema(
       // using allow
       type: Number,
       default: 1, // 0 is waiting, -1 is block, 1 is accept
+    },
+    lastLogin: {
+      // lastest login time
+      type: Date,
+      default: Date.now(),
     },
     salt: {
       type: String,
