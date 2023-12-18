@@ -5,7 +5,8 @@ const catchAsync = require("../config/utils/catchAsync");
 const fs = require("fs");
 const path = require("path");
 const avatarUploadPath = "../assets/media/avatar/";
-var {LANGUAGES, ACTIVITIES} = require("../config/constants")
+var { LANGUAGES, ACTIVITIES } = require("../config/constants");
+const { uploadImage } = require("../config/upload");
 var mongoose = require("mongoose"),
   User = mongoose.model("User"),
   Traveler = mongoose.model("Traveler"),
@@ -14,28 +15,20 @@ var mongoose = require("mongoose"),
   url = require("url"),
   config = require("../config/config");
 
-exports.avatar = (req, res) => {
-  const filePath = path.join(
-    __dirname,
-    avatarUploadPath,
-    `${req.params.id}.avatar`
-  );
-  fs.readFile(filePath, (err, data) => {
-    if (err) {
-      console.error("---------->Avatar no exist");
-      return res.status(500).send({
-        code: "500",
-        error: "Avatar No Exist",
-      });
-    } else {
-      console.error("---------->Avatar exist");
-      const uri = data.toString();
-      return res.status(200).send({
-        uri: uri,
-      });
-    }
-  });
-};
+exports.avatar = catchAsync(async (req, res) => {
+  console.log("------------>avatar api called");
+  let userId = req.params.id;
+  let base64Data = req.body.uri;
+  let avatarUrl = await uploadImage("avatar", userId, base64Data, res);
+  User.findByIdAndUpdate(userId, { avatar: avatarUrl })
+    .then((user) => {
+      console.log("------------>upload success.");
+      return res.status(200).send(user.avatar);
+    })
+    .catch((err) => {
+      handleError(err, res);
+    });
+});
 exports.register = (req, res) => {
   let { fullName, email, password, phone, gender, birth } = req.body;
   User.findOne({ email: email })
@@ -120,12 +113,11 @@ exports.login = (req, res) => {
         { email: email },
         { logins: user.logins + 1, lastLogin: Date.now() }
       );
-      console.log(user);
       return res.status(200).send({
         token: getToken(user),
         user: user,
         languages: LANGUAGES,
-        activities:ACTIVITIES
+        activities: ACTIVITIES,
       });
     })
     .catch((err) => {
@@ -135,7 +127,7 @@ exports.login = (req, res) => {
 };
 exports.all = (req, res) => {
   Traveler.find()
-    .populate("user", ["fullName", "ratingCount","guideOverview"])
+    .populate("user", ["fullName", "ratingCount", "guideOverview"])
     .select("-password -salt")
     .then((users) => {
       console.log(users);

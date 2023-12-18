@@ -6,9 +6,9 @@ var GuideSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  guideOverview:{
-    type:String,
-    default:""
+  guideOverview: {
+    type: String,
+    default: "",
   },
   activities: String,
   activities: {
@@ -31,7 +31,7 @@ var GuideSchema = new Schema({
       },
       travelImageUrl: {
         type: String,
-        default:""
+        default: "",
       },
       hour: {
         type: Number,
@@ -41,28 +41,26 @@ var GuideSchema = new Schema({
         type: Number,
         required: [true, "Insert your travel Price"],
       },
-      available:{
+      available: {
         type: Boolean,
-        default:true //
-      }
-    },
-  ],
-  social: [
-    {
-      facebook: {
-        type: String,
-        default:""
-      },
-      linkedin: {
-        type: String,
-        default:""
-      },
-      youtube: {
-        type: String,
-        default:""
+        default: true, //
       },
     },
   ],
+  social: {
+    facebook: {
+      type: String,
+      default: "",
+    },
+    linkedin: {
+      type: String,
+      default: "",
+    },
+    youtube: {
+      type: String,
+      default: "",
+    },
+  },
   rating: {
     type: Number,
     default: 0,

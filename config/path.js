@@ -1,1 +1,0 @@
-const avatarUploadPath = "assets/media/avatar/";

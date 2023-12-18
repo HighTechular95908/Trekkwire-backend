@@ -37,9 +37,9 @@ const ACTIVITIES = [
   "Other Adventure",
 ];
 
-const PATH_AVATAR_UPLOAD = "/assets/media/avatar/";
+const PATH_IMAGE_UPLOAD = "/assets/media/images";
 module.exports = {
   LANGUAGES,
   ACTIVITIES,
-  PATH_AVATAR_UPLOAD
+  PATH_IMAGE_UPLOAD
 };
