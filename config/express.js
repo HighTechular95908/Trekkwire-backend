@@ -18,7 +18,7 @@ module.exports = () => {
   app.use(methodOverride());
   app.use(passport.initialize());
   app.use(passport.session());
-  app.use('/assets/media/avatar', express.static('uploads'));
+  app.use('/assets', express.static('assets'));
   routers.map((router) => {
     app.use(`/api/${router}`, require(`../routers/${router}.router`));
   });
