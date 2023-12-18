@@ -36,7 +36,10 @@ const ACTIVITIES = [
   "Amusement Park",
   "Other Adventure",
 ];
+
+const PATH_AVATAR_UPLOAD = "/assets/media/avatar/";
 module.exports = {
   LANGUAGES,
   ACTIVITIES,
+  PATH_AVATAR_UPLOAD
 };

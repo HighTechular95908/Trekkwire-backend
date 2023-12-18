@@ -1,7 +1,4 @@
 const chalk = require('chalk');
-
-console.log(chalk.blue('Hello world!'));
-
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
 var express = require("./config/express"),
@@ -9,12 +6,11 @@ var express = require("./config/express"),
     passport = require("./config/passport"),
     config = require("./config/config"),
     http = require("http");
-
 mongoose().then(() => {
     var app = express();
     passport();
     var server = http.createServer(app);
     server.listen(config.port, () => {
-        console.log(`Server is running at http://localhost:${config.port}`)
+        console.log(chalk.blue(`Server is running at http://localhost:${config.port}`));
     });
 });

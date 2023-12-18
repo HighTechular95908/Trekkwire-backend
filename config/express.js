@@ -5,25 +5,17 @@ var express = require("express"),
   methodOverride = require("method-override"),
   path = require("path"),
   routers = require("./routers"),
-  bodyParser = require('body-parser');
+  bodyParser = require("body-parser");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("../swagger.json");
-
 module.exports = () => {
   var app = express();
-
-  app.use(express.json());
-  app.use(
-    express.urlencoded({
-      extended: true,
-    })
-  );
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-  app.use(bodyParser.json());
+  app.use(express.json({ limit: "25mb" }));
+  app.use(express.urlencoded({ limit: "25mb", extended: true }));
   app.use(cors());
   app.use(morgan("dev"));
   app.use(methodOverride());
-
   app.use(passport.initialize());
   app.use(passport.session());
 
@@ -36,4 +28,3 @@ module.exports = () => {
 
   return app;
 };
-

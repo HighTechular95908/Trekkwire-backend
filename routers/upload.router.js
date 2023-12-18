@@ -1,7 +1,5 @@
 var router = require("express").Router();
 const UploadController = require('../controllers/upload.controller');
-
-router.post("/avatar", UploadController.uploadAvatar);
-router.post("/test", UploadController.uploadTest);
-
+router.post("/avatar/:id", UploadController.uploadAvatar);
+router.post("/travel-image/:id", UploadController.uploadAvatar);
 module.exports = router;
