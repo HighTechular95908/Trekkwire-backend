@@ -1,12 +1,10 @@
 const getToken = require("../config/utils/getToken");
 const handleError = require("../config/utils/handleError");
 const catchAsync = require("../config/utils/catchAsync");
+const { PATH_IMAGE_UPLOAD } = require("../config/constants");
 
-const fs = require("fs");
-const path = require("path");
-const avatarUploadPath = "../assets/media/avatar/";
 var { LANGUAGES, ACTIVITIES } = require("../config/constants");
-const { uploadImage } = require("../config/upload");
+const upload = require("../config/upload");
 var mongoose = require("mongoose"),
   User = mongoose.model("User"),
   Traveler = mongoose.model("Traveler"),
@@ -19,11 +17,13 @@ exports.avatar = catchAsync(async (req, res) => {
   console.log("------------>avatar api called");
   let userId = req.params.id;
   let base64Data = req.body.uri;
-  let avatarUrl = await uploadImage("avatar", userId, base64Data, res);
+  upload("avatar", userId, base64Data, res);
+  let avatarUrl = `${PATH_IMAGE_UPLOAD}/avatar/${userId}.jpeg`;
+  console.log("avatarUrl--------->", avatarUrl);
   User.findByIdAndUpdate(userId, { avatar: avatarUrl })
     .then((user) => {
       console.log("------------>upload success.");
-      return res.status(200).send(user.avatar);
+      return res.status(200).send({});
     })
     .catch((err) => {
       handleError(err, res);
