@@ -19,9 +19,11 @@ exports.create = (req, res) => {
 };
 exports.all = catchAsync(async (req, res) => {
   try {
-    const travelers = await Traveler.findOne().populate("user", [
+    const travelers = await Traveler.find().populate("user", [
       "fullName",
       "avatar",
+      "country",
+      "city",
     ]);
     console.log(travelers);
     return res.status(200).send(travelers);

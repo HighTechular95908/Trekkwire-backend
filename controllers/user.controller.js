@@ -5,6 +5,7 @@ const catchAsync = require("../config/utils/catchAsync");
 const fs = require("fs");
 const path = require("path");
 const avatarUploadPath = "../assets/media/avatar/";
+var {LANGUAGES, ACTIVITIES} = require("../config/constants")
 var mongoose = require("mongoose"),
   User = mongoose.model("User"),
   Traveler = mongoose.model("Traveler"),
@@ -123,6 +124,8 @@ exports.login = (req, res) => {
       return res.status(200).send({
         token: getToken(user),
         user: user,
+        languages: LANGUAGES,
+        activities:ACTIVITIES
       });
     })
     .catch((err) => {

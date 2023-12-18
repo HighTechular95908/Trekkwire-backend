@@ -12,6 +12,10 @@ var TravelerSchema = new Schema({
         type: String,
         required: true,
       },
+      travelId: {
+        type: String,
+        required: true,
+      },
       travelName: {
         type: String,
         required: true,

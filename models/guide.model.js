@@ -22,17 +22,15 @@ var GuideSchema = new Schema({
   },
   availableTravels: [
     {
+      travelId: {
+        type: mongoose.Schema.Types.ObjectId,
+      },
       travelName: {
         type: String,
         required: [true, "Insert your travelName"],
       },
-      travelType: {
+      travelImageUrl: {
         type: String,
-        required: [true, "Insert your travelType"],
-      },
-      travelIntroImageUrl: {
-        type: String,
-        // required: [true, "Insert your travel IntroImage"],
         default:""
       },
       hour: {
@@ -43,9 +41,9 @@ var GuideSchema = new Schema({
         type: Number,
         required: [true, "Insert your travel Price"],
       },
-      availableNow:{
-        type: Number,
-        default:1 //0: not available, -1: blocked
+      available:{
+        type: Boolean,
+        default:true //
       }
     },
   ],

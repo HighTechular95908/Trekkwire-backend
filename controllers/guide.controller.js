@@ -46,21 +46,25 @@ exports.delete = catchAsync(async (req, res) => {
   let userid = req.params.id;
   try {
     await Guide.findOneAndDelete({ user: userid });
+    await User.findByIdAndUpdate(userid, { roles: ["traveler"] });
     res.status(200).send({ message: "Successfully deleted." });
   } catch (err) {
     handleError(err, res);
   }
 });
 exports.all = catchAsync(async (req, res) => {
-  console.log("------->all called")
+  console.log("------->all called");
   try {
-    let guides = await Guide
-    .find()
-    .populate("user", ["fullName", "avatar"]);
-    console.log("------------>",guides);
+    let guides = await Guide.find().populate("user", [
+      "fullName",
+      "avatar",
+      "country",
+      "city",
+    ]);
+    console.log("------------>", guides);
     return res.status(200).send(guides);
   } catch (err) {
-    console("---------<",err)
+    console("---------<", err);
     handleError(err, res);
   }
 });
@@ -83,17 +87,12 @@ exports.search = (req, res) => {
     })
     .catch((err) => handleError(err, res));
 };
-
 exports.guideProfile = (req, res) => {
   console.log("------------->guide get request");
   var userId = req.params.id;
   Guide.findOne({ user: userId })
+    .populate("user", ["fullName", "avatar"])
     .then((guide) => {
-      // User.findById(userId).select("-password -salt -email -gender -birth -lastLogin -logins -roles -allow").then((user)=>{
-      //   var merged = {...guide, ...user};
-      //   console.log(merged);
-      //   return res.status(200).send(guide);
-      // })
       console.log(guide);
       return res.status(200).send({
         guide: guide,
@@ -101,3 +100,68 @@ exports.guideProfile = (req, res) => {
     })
     .catch((err) => handleError(err, res));
 };
+exports.alltravel = (req, res) => {
+  var userId = req.params.id;
+  Guide.findOne({ user: userId })
+    .then((guide) => {
+      console.log(guide.availableTravels);
+      return res.status(200).send(guide.availableTravels);
+    })
+    .catch((err) => handleError(err, res));
+};
+
+exports.createOneTravel = catchAsync(async (req, res) => {
+  console.log("--------------------<creatonetravel called");
+  var userId = req.params.id;
+  var newTravel = req.body;
+  Guide.findOneAndUpdate(
+    { user: userId },
+    { $push: { availableTravels: newTravel } },
+    { new: true }
+  )
+    .then((guide) => {
+      console.log(guide);
+      const createdTravel = guide.availableTravels.find(
+        (travel) => travel._id === newTravel._id
+      );
+      return res.status(200).send(createdTravel);
+    })
+    .catch((err) => {
+      handleError(err, res);
+    });
+});
+exports.readOneTravel = (req, res) => {
+  var userId = req.params.id;
+  var travelId = req.query._id;
+  Guide.findOne({ user: userId })
+    .then((guide) => {
+      const travel = guide.availableTravels.find(
+        (travel) => travel.id === travelId
+      );
+      console.log(travel);
+      return res.status(200).send(travel);
+    })
+    .catch((err) => handleError(err, res));
+};
+exports.updateOneTravel = catchAsync(async (req, res) => {
+  var { travelName, travelImageUrl, price, hour, available } = req.body;
+  var userId = req.params.id;
+  var travelId = req.query._id;
+  await Guide.updateOne(
+    { _id: userId, "availableTravels._id": travelId }, //Finding Product with the particular price
+    { $set: { "availableTravels.$.travelName": "test", "availableTravels.$.price": 200 } }
+  );
+});
+exports.updateOneDelete = catchAsync(async (req, res) => {
+  var userId = req.params.id;
+  var travelId = req.query._id;
+  try {
+    await Guide.findOneAndUpdate({
+      user: userId,
+      availableTravels: { $elemMatch: { _id: travelId } },
+    });
+    return res.status(200).send({});
+  } catch (err) {
+    handleError(err, res);
+  }
+});
