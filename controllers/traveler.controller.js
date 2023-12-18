@@ -97,12 +97,12 @@ exports.search = (req, res) => {
 exports.book = catchAsync(async (req, res) => {
   let userId = req.params.id;
   let bookInfo = req.body;
-  console.log(bookInfo);
+  console.log("------------->bookinfo",bookInfo);
   try {
     const traveler = await Traveler.findOne({ user: userId });
     traveler.booking.unshift(bookInfo);
     await traveler.save();
-    res.status(200).send(traveler);
+    res.status(200).send({});
   } catch (err) {
     handleError(err, res);
   }

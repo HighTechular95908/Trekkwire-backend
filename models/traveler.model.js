@@ -8,15 +8,14 @@ var TravelerSchema = new Schema({
   },
   booking: [
     {
-      guideId: {
+      bookId:{
+        type:Schema.Types.ObjectId
+      },
+      userId: { // guideId
         type: String,
         required: true,
       },
       travelId: {
-        type: String,
-        required: true,
-      },
-      travelName: {
         type: String,
         required: true,
       },
@@ -27,6 +26,18 @@ var TravelerSchema = new Schema({
       endDate: {
         type: Date,
         default: Date.now(),
+      },
+      phone: {
+        type: String,
+        default: "",
+      },
+      email: {
+        type: String,
+        default: "",
+      },
+      where: {
+        type: String,
+        default: "",
       },
     },
   ],
