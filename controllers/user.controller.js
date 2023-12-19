@@ -12,18 +12,20 @@ var mongoose = require("mongoose"),
   jwt = require("jsonwebtoken"),
   url = require("url"),
   config = require("../config/config");
-
+//upload user's avatar, objecs.jpeg
 exports.avatar = catchAsync(async (req, res) => {
-  console.log("------------>avatar api called");
   let userId = req.params.id;
   let base64Data = req.body.uri;
-  upload("avatar", userId, base64Data, res);
-  let avatarUrl = `${PATH_IMAGE_UPLOAD}/avatar/${userId}.jpeg`;
-  console.log("avatarUrl--------->", avatarUrl);
-  User.findByIdAndUpdate(userId, { avatar: avatarUrl })
-    .then((user) => {
-      console.log("------------>upload success.");
-      return res.status(200).send({});
+  await upload("avatar", userId, base64Data, res)
+    .then(async (result) => {
+      let avatarUrl = `${PATH_IMAGE_UPLOAD}/avatar/${userId}.jpeg`; // /assets/media/images/avatar/objectId.jpeg
+      await User.findByIdAndUpdate(userId, { avatar: avatarUrl })
+        .then((user) => {
+          return res.status(200).send({});
+        })
+        .catch((err) => {
+          handleError(err, res);
+        });
     })
     .catch((err) => {
       handleError(err, res);

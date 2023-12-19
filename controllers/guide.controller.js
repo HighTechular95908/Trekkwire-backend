@@ -1,6 +1,7 @@
 var mongoose = require("mongoose"),
   Guide = mongoose.model("Guide"),
-  User = mongoose.model("User");
+  User = mongoose.model("User"),
+  Book = mongoose.model("Book");
 const handleError = require("../config/utils/handleError");
 const catchAsync = require("../config/utils/catchAsync");
 const upload = require("../config/upload");
@@ -53,7 +54,7 @@ exports.update = catchAsync(async (req, res) => {
 exports.delete = catchAsync(async (req, res) => {
   let userid = req.params.id;
   try {
-    await Guide.findOneAndDelete({ user: userid })
+    await Guide.findOneAndDelete({ user: userid });
     await User.findByIdAndUpdate(userid, { roles: ["traveler"] });
     res.status(200).send({});
   } catch (err) {
@@ -121,7 +122,8 @@ exports.createOneTravel = catchAsync(async (req, res) => {
       await Guide.updateOne(
         { user: userId, "availableTravels._id": createdTravelId }, //Finding Product with the particular price
         { $set: { "availableTravels.$.travelImageUrl": imageUrl } }
-        ).then((result) => {
+      )
+        .then((result) => {
           return res.status(200).send({});
         })
         .catch((err) => handleError(err, res));
@@ -154,7 +156,7 @@ exports.updateOneTravel = catchAsync(async (req, res) => {
   await Guide.updateOne(
     { user: userId, "availableTravels._id": travelId }, //Finding Product with the particular price
     { $set: { "availableTravels.$.travelName": travelName } }
-    ).catch((err) => handleError(err, res));
+  ).catch((err) => handleError(err, res));
   await Guide.updateOne(
     { user: userId, "availableTravels._id": travelId }, //Finding Product with the particular price
     { $set: { "availableTravels.$.price": price } }
@@ -189,9 +191,9 @@ exports.deleteOneTravel = catchAsync(async (req, res) => {
 //All booking info as a guide
 exports.Allbook = catchAsync(async (req, res) => {
   let userId = req.params.id;
-  await Guide.findOne({ user: userId })
-    .then((Guide) => {
-      return res.status(200).send(Guide.booking);
+  await Book.find({ userId: userId })
+    .then((books) => {
+      return res.status(200).send(books);
     })
     .catch((err) => handleError(err, res));
 });

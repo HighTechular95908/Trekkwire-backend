@@ -2,8 +2,7 @@ const catchAsync = require("../config/utils/catchAsync");
 const handleError = require("../config/utils/handleError");
 
 var mongoose = require("mongoose"),
-  Traveler = mongoose.model("Traveler"),
-  Guide = mongoose.model("Guide");
+  Traveler = mongoose.model("Traveler");
 //All travelers
 exports.all = catchAsync(async (req, res) => {
   try {
@@ -18,48 +17,17 @@ exports.all = catchAsync(async (req, res) => {
     handleError(err, res);
   }
 });
-//Search traveler
 
-//book a travel
-exports.book = catchAsync(async (req, res) => {
-  let userId = req.params.id;
-  let bookInfo = req.body;
-  try {
-    //traveler booking info saving
-    const traveler = await Traveler.findOne({ user: userId });
-    traveler.booking.unshift(bookInfo);
-    await traveler.save().catch((err) => handleError(err, res));
-    //guide simultaneously saving
-    await Guide.findOne({ user: userId }).then(async (guide) => {
-      guide.booking.unshift(bookInfo);
-      await guide.save().catch((err) => handleError(err, res))
-    })
-    res.status(200).send({});
-  } catch (err) {
-    handleError(err, res);
-  }
-});
-//All books as a travel
+//get all booking Info
 exports.Allbook = catchAsync(async (req, res) => {
   let userId = req.params.id;
-
-  await Traveler.findOne({ user: userId })
-    .then((traveler) => {
-      return res.status(200).send(traveler.booking);
+  await Book.find({ userId: userId })
+    .then((books) => {
+      return res.status(200).send(books);
     })
     .catch((err) => handleError(err, res));
 });
-//book a travel cancel???????
-exports.cancel = catchAsync(async (req, res) => {
-  let userId = req.params.id;
-  let { guideId, travelName } = req.body;
-  let Traveler = await Traveler.findOne({ user: userId });
-  let bookingInfoArray = Traveler;
-  let condition1 = guideId;
-  let condition2 = travelName;
-  const filteredArr = filterArray(Traveler.booking, filterFn1, filterFn2);
-  console.log(JSON.stringify(filteredArr));
-});
+
 //search traveler ????????
 exports.search = (req, res) => {
   let { location, name } = req.body;
