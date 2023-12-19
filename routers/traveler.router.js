@@ -3,7 +3,7 @@ var router = require("express").Router(),
 
 router.post("/create/:id", travelerCtr.create);
 router.post("/book/:id", travelerCtr.book);
-router.post("/book/all/:id", travelerCtr.Allbook);
+router.get("/book/all/:id", travelerCtr.Allbook);
 router.get("/all", travelerCtr.all);
 
 module.exports = router;
