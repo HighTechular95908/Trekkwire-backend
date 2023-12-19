@@ -75,7 +75,7 @@ var GuideSchema = new Schema({
         type: Schema.Types.ObjectId,
       },
       userId: {
-        // guideId
+        // guideId for traveler, where it indicates itself since guide model
         type: String,
         required: true,
       },

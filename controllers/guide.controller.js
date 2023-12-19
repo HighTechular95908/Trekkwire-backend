@@ -191,16 +191,12 @@ exports.deleteOneTravel = catchAsync(async (req, res) => {
     })
     .catch((err) => handleError(err, res));
 });
-exports.book = catchAsync(async (req, res) => {
+exports.Allbook = catchAsync(async (req, res) => {
   let userId = req.params.id;
-  let bookInfo = req.body;
-  console.log("------------->bookinfo",bookInfo);
-  try {
-    const traveler = await Traveler.findOne({ user: userId });
-    traveler.booking.unshift(bookInfo);
-    await traveler.save();
-    res.status(200).send({});
-  } catch (err) {
-    handleError(err, res);
-  }
+
+  await Guide.findOne({ user: userId })
+    .then((Guide) => {
+      return res.status(200).send(Guide.booking);
+    })
+    .catch((err) => handleError(err, res));
 });

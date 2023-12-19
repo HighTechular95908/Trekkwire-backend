@@ -98,7 +98,7 @@ exports.search = (req, res) => {
 exports.book = catchAsync(async (req, res) => {
   let userId = req.params.id;
   let bookInfo = req.body;
-  console.log("------------->bookinfo",bookInfo);
+  console.log("------------->bookinfo", bookInfo);
   try {
     //traveler booking info saving
     const traveler = await Traveler.findOne({ user: userId });
@@ -113,6 +113,15 @@ exports.book = catchAsync(async (req, res) => {
   } catch (err) {
     handleError(err, res);
   }
+});
+exports.Allbook = catchAsync(async (req, res) => {
+  let userId = req.params.id;
+
+  await Traveler.findOne({ user: userId })
+    .then((traveler) => {
+      return res.status(200).send(traveler.booking);
+    })
+    .catch((err) => handleError(err, res));
 });
 exports.cancel = catchAsync(async (req, res) => {
   let userId = req.params.id;
