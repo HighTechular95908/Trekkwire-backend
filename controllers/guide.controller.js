@@ -95,7 +95,7 @@ exports.search = (req, res) => {
 exports.guideProfile = (req, res) => {
   var userId = req.params.id;
   Guide.findOne({ user: userId })
-    .populate("user", ["fullName", "avatar"])
+    .populate("user", ["fullName", "avatar", "country", "city"])
     .then((guide) => {
       return res.status(200).send(guide);
     })
@@ -190,4 +190,17 @@ exports.deleteOneTravel = catchAsync(async (req, res) => {
       return res.status(200).send(guide);
     })
     .catch((err) => handleError(err, res));
+});
+exports.book = catchAsync(async (req, res) => {
+  let userId = req.params.id;
+  let bookInfo = req.body;
+  console.log("------------->bookinfo",bookInfo);
+  try {
+    const traveler = await Traveler.findOne({ user: userId });
+    traveler.booking.unshift(bookInfo);
+    await traveler.save();
+    res.status(200).send({});
+  } catch (err) {
+    handleError(err, res);
+  }
 });

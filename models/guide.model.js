@@ -69,6 +69,72 @@ var GuideSchema = new Schema({
     type: Number,
     default: 0,
   },
+  booking: [
+    {
+      bookId: {
+        type: Schema.Types.ObjectId,
+      },
+      userId: {
+        // guideId
+        type: String,
+        required: true,
+      },
+      travelId: {
+        type: String,
+        required: true,
+      },
+      //
+      startDate: {
+        type: Date,
+        default: Date.now(),
+      },
+      endDate: {
+        type: Date,
+        default: Date.now(),
+      },
+      phone: {
+        type: String,
+        required: true,
+      },
+      email: {
+        type: String,
+        required: true,
+      },
+      where: {
+        type: String,
+        required: true,
+      },
+      //
+      guideName: {
+        type: String,
+        required: true,
+      },
+      country: {
+        type: String,
+        required: true,
+      },
+      city: {
+        type: String,
+        required: true,
+      },
+      travelName: {
+        type: String,
+        required: true,
+      },
+      travelImageUrl: {
+        type: String,
+        required: true,
+      },
+      price: {
+        type: String,
+        required: true,
+      },
+      hour: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 });
 
 mongoose.model("Guide", GuideSchema, "guide");

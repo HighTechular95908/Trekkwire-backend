@@ -2,7 +2,8 @@ const catchAsync = require("../config/utils/catchAsync");
 const handleError = require("../config/utils/handleError");
 
 var mongoose = require("mongoose"),
-  Traveler = mongoose.model("Traveler");
+  Traveler = mongoose.model("Traveler"),
+  Guide = mongoose.model("Guide");
 exports.create = (req, res) => {
   let travelerId = req.params.id;
   try {
@@ -99,9 +100,15 @@ exports.book = catchAsync(async (req, res) => {
   let bookInfo = req.body;
   console.log("------------->bookinfo",bookInfo);
   try {
+    //traveler booking info saving
     const traveler = await Traveler.findOne({ user: userId });
     traveler.booking.unshift(bookInfo);
     await traveler.save();
+    //guide simultaneously saving
+    const guide = await Guide.findOne({ user: userId });
+    guide.booking.unshift(bookInfo);
+    await guide.save();
+
     res.status(200).send({});
   } catch (err) {
     handleError(err, res);
