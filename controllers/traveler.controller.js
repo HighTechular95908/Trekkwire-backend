@@ -2,7 +2,8 @@ const catchAsync = require("../config/utils/catchAsync");
 const handleError = require("../config/utils/handleError");
 
 var mongoose = require("mongoose"),
-  Traveler = mongoose.model("Traveler");
+  Traveler = mongoose.model("Traveler"),
+  Book = mongoose.model("Book");
 //All travelers
 exports.all = catchAsync(async (req, res) => {
   try {
@@ -20,12 +21,19 @@ exports.all = catchAsync(async (req, res) => {
 
 //get all booking Info
 exports.Allbook = catchAsync(async (req, res) => {
-  let userId = req.params.id;
-  await Book.find({ userId: userId })
+  let id = req.params.id;
+  await Book.find({ travelerId: id })
     .then((books) => {
+      if (books.length == 0) {
+        console.log("----------->1");
+        return res.status(200).send(books);
+      }
       return res.status(200).send(books);
     })
-    .catch((err) => handleError(err, res));
+    .catch((err) => {
+      console.log("----------->2");
+      handleError(err, res);
+    });
 });
 
 //search traveler ????????
@@ -92,3 +100,32 @@ exports.search = (req, res) => {
       });
   }
 };
+exports.updateStar = catchAsync(async (req, res) => {
+  let userId = req.params.id;
+  let star = req.query._star;
+  console.log("sendedStar--------->", star);
+  let traveler = await Traveler.findOne({ user: userId });
+  console.log("traveler.Rating--------->", traveler.rating);
+  let beforeCount = traveler.ratingCount;
+  let afterCount = beforeCount + 1;
+  let total = parseFloat(traveler.rating * beforeCount) + parseFloat(star);
+  console.log("------------>beforetotal", total);
+  let afterStar = total / afterCount;
+  console.log("beforeStarCount--------->", beforeCount);
+  console.log("afterStarCount--------->", afterCount);
+  console.log("afterStar--------->", afterStar);
+  await Traveler.findOneAndUpdate(
+    { user: userId },
+    {
+      rating: afterStar.toFixed(1),
+      ratingCount: afterCount,
+    }
+  )
+    .then((traveler) => {
+      console.log("afterStarCount--------->", traveler.ratingCount);
+      return res.status(200).send({
+        staredStatus: 2,
+      });
+    })
+    .catch((err) => handleError(err, res));
+});

@@ -5,7 +5,12 @@ var BookSchema = new Schema({
   bookId: {
     type: Schema.Types.ObjectId,
   },
-  userId: {
+  travelerId: {
+    // guideId for traveler, where it indicates itself since guide model
+    type: String,
+    required: true,
+  },
+  guideId: {
     // guideId for traveler, where it indicates itself since guide model
     type: String,
     required: true,
@@ -25,15 +30,17 @@ var BookSchema = new Schema({
   },
   phone: {
     type: String,
-    required: true,
+    default: "",
   },
   email: {
     type: String,
-    required: true,
+    default: "",
+
   },
   where: {
     type: String,
-    required: true,
+    default: "",
+
   },
   //
   travelerName: {
@@ -46,32 +53,41 @@ var BookSchema = new Schema({
   },
   country: {
     type: String,
-    required: true,
+    default: "",
+
   },
   city: {
     type: String,
-    required: true,
+    default: "",
+
   },
   travelName: {
     type: String,
-    required: true,
+    default: "",
   },
   travelImageUrl: {
     type: String,
-    required: true,
+    default: "",
+
   },
   price: {
-    type: String,
-    required: true,
+    type: Number,
+    default: 0,
+
   },
   hour: {
-    type: String,
-    required: true,
+    type: Number,
+    default: 0,
+
   },
   status: {
     type: Number,
-    default: 0, //0->no allow, 1-> accept by gudie
-  }
+    default: 0, //0->no allow, 1-> accept by guide, 2->End
+  },
+  staredStatus: {
+    type: Number,
+    default: 0, //0->no stared, 1-> stared by guide, 2-> stared by guide
+  },
 });
 
 mongoose.model("Book", BookSchema, "Book");

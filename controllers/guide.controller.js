@@ -169,11 +169,7 @@ exports.updateOneTravel = catchAsync(async (req, res) => {
     { user: userId, "availableTravels._id": travelId }, //Finding Product with the particular price
     { $set: { "availableTravels.$.available": available } }
   ).catch((err) => handleError(err, res));
-  Guide.findById(travelId)
-    .then((guide) => {
-      return res.status(200).send(guide);
-    })
-    .catch((err) => handleError(err, res));
+  return res.status(200).send({});
 });
 //delete travels as a guide
 exports.deleteOneTravel = catchAsync(async (req, res) => {
@@ -190,10 +186,66 @@ exports.deleteOneTravel = catchAsync(async (req, res) => {
 });
 //All booking info as a guide
 exports.Allbook = catchAsync(async (req, res) => {
-  let userId = req.params.id;
-  await Book.find({ userId: userId })
+  let id = req.params.id;
+  await Book.find({ guideId: id })
     .then((books) => {
+      console.log(books);
       return res.status(200).send(books);
+    })
+    .catch((err) => handleError(err, res));
+});
+//
+exports.travelAccept = catchAsync(async (req, res) => {
+  let bookId = req.params.id;
+  await Book.findByIdAndUpdate(bookId, {
+    status: 1,
+  })
+    .then((book) => {
+      return res.status(200).send({
+        status: 1,
+      });
+    })
+    .catch((err) => handleError(err, res));
+});
+exports.travelCancel = catchAsync(async (req, res) => {
+  let bookId = req.params.id;
+  await Book.findByIdAndUpdate(bookId, {
+    status: 0,
+  })
+    .then((book) => {
+      return res.status(200).send({
+        status: 0,
+      });
+    })
+    .catch((err) => handleError(err, res));
+});
+//update star rating for guide
+exports.updateStar = catchAsync(async (req, res) => {
+  let userId = req.params.id;
+  let star = req.query._star;
+  console.log("sendedStar--------->", star);
+  let guide = await Guide.findOne({ user: userId });
+  console.log("guide.Rating--------->", guide.rating);
+  let beforeCount = guide.ratingCount;
+  let afterCount = beforeCount + 1;
+  let total = parseFloat(guide.rating * beforeCount) + parseFloat(star);
+  console.log("------------>beforetotal", total);
+  let afterStar = total / afterCount;
+  console.log("beforeStarCount--------->", beforeCount);
+  console.log("afterStarCount--------->", afterCount);
+  console.log("afterStar--------->", afterStar);
+  await Guide.findOneAndUpdate(
+    { user: userId },
+    {
+      rating: afterStar.toFixed(1),
+      ratingCount: afterCount,
+    }
+  )
+    .then((guide) => {
+      console.log("afterStarCount--------->", guide.ratingCount);
+      return res.status(200).send({
+        staredStatus: 1,
+      });
     })
     .catch((err) => handleError(err, res));
 });

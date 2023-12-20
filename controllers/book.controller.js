@@ -5,11 +5,16 @@ var mongoose = require("mongoose"),
 //create a book
 exports.create = catchAsync(async (req, res) => {
   let bookingInfo = req.body;
+  console.log("bookinginfo", bookingInfo)
   await Book.create(bookingInfo)
     .then((book) => {
-      return res.status(200).send({});
+      console.log("------->1")
+      return res.status(200).send({
+        status:0
+      });
     })
     .catch((err) => {
+      console.log("------->2")
       handleError(err, res);
     });
 });
@@ -21,8 +26,8 @@ exports.Allbook = catchAsync(async (req, res) => {
     })
     .catch((err) => handleError(err, res));
 });
-//cancel a book
-exports.cancel = catchAsync(async (req, res) => {
+//delete a book
+exports.bookDelete = catchAsync(async (req, res) => {
   let userId = req.params.id;
   try {
     await Book.findOneAndDelete({ userId: userId });

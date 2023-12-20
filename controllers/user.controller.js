@@ -16,16 +16,11 @@ var mongoose = require("mongoose"),
 exports.avatar = catchAsync(async (req, res) => {
   let userId = req.params.id;
   let base64Data = req.body.uri;
-  await upload("avatar", userId, base64Data, res)
-    .then(async (result) => {
-      let avatarUrl = `${PATH_IMAGE_UPLOAD}/avatar/${userId}.jpeg`; // /assets/media/images/avatar/objectId.jpeg
-      await User.findByIdAndUpdate(userId, { avatar: avatarUrl })
-        .then((user) => {
-          return res.status(200).send({});
-        })
-        .catch((err) => {
-          handleError(err, res);
-        });
+  upload("avatar", userId, base64Data, res);
+  let avatarUrl = `${PATH_IMAGE_UPLOAD}/avatar/${userId}.jpeg`; // /assets/media/images/avatar/objectId.jpeg
+  await User.findByIdAndUpdate(userId, { avatar: avatarUrl })
+    .then((user) => {
+      return res.status(200).send({});
     })
     .catch((err) => {
       handleError(err, res);
@@ -127,6 +122,9 @@ exports.login = (req, res) => {
       handleError(err, res);
     });
 };
+
+
+
 exports.all = (req, res) => {
   Traveler.find()
     .populate("user", ["fullName", "ratingCount", "guideOverview"])
@@ -142,6 +140,7 @@ exports.all = (req, res) => {
       });
     });
 };
+//???
 exports.search = (req, res) => {
   var location = req.query._location;
   var name = req.query._name;
@@ -207,10 +206,6 @@ exports.search = (req, res) => {
         // Handle the error
       });
   }
-};
-exports.test = (req, res) => {
-  User.find();
-  res.status(400).send({ data: "400 error sent" });
 };
 exports.loginWithToken = (req, res) => {
   let { token } = req.body;
