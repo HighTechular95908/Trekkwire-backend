@@ -1,7 +1,7 @@
 var mongoose = require("mongoose"),
   Schema = mongoose.Schema;
 
-var BookSchema = new Schema({//handle book Schema and model, database.
+var BookSchema = new Schema({
   bookId: {
     type: Schema.Types.ObjectId,
   },
