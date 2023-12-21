@@ -90,4 +90,4 @@ var BookSchema = new Schema({
   },
 });
 
-mongoose.model("Book", BookSchema, "Book");
+mongoose.model("Book", BookSchema, "Book");//register Book model
