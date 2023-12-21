@@ -222,6 +222,7 @@ exports.travelCancel = catchAsync(async (req, res) => {
 //update star rating for guide
 exports.updateStar = catchAsync(async (req, res) => {
   let userId = req.params.id;
+  let bookId = req.query._book;
   let star = req.query._star;
   console.log("sendedStar--------->", star);
   let guide = await Guide.findOne({ user: userId });
@@ -234,18 +235,21 @@ exports.updateStar = catchAsync(async (req, res) => {
   console.log("beforeStarCount--------->", beforeCount);
   console.log("afterStarCount--------->", afterCount);
   console.log("afterStar--------->", afterStar);
-  await Guide.findOneAndUpdate(
-    { user: userId },
-    {
-      rating: afterStar.toFixed(1),
-      ratingCount: afterCount,
-    }
-  )
-    .then((guide) => {
-      console.log("afterStarCount--------->", guide.ratingCount);
-      return res.status(200).send({
-        staredStatus: 1,
-      });
-    })
-    .catch((err) => handleError(err, res));
+  try {
+    await Guide.findOneAndUpdate(
+      { user: userId },
+      {
+        rating: afterStar.toFixed(1),
+        ratingCount: afterCount,
+      }
+    );
+    await Book.findByIdAndUpdate(bookId, {
+      staredStatus: 1,
+    });
+    return res.status(200).send({
+      staredStatus: 1,
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });

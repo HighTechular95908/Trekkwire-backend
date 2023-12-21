@@ -20,3 +20,4 @@ exports.totalGuide = (req, res) => {
     })
     .catch((err) => handleError(err, res));
 };
+
